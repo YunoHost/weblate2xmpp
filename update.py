@@ -46,7 +46,7 @@ def main():
                 }
             elif db[component][language]["translated_percent"] != i["translated_percent"]:
                 old_percent = db[component][language]["translated_percent"]
-                bot.sendToChatRoom("[%s translation %s %s%% -> %s%%" % (language, component, old_percent, i["translated_percent"]))
+                bot.sendToChatRoom("[%s] translation %s %s%% -> %s%%" % (language, component, old_percent, i["translated_percent"]))
                 db[component][language]["translated_percent"] = i["translated_percent"]
 
     json.dump(db, open("db.json", "w"), indent=4)
