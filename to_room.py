@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import sys
 import xmpp
 from contextlib import contextmanager
 
@@ -15,7 +16,9 @@ def XMPPBot(password):
 
     def connect():
         client.connect()
-        client.auth(jid.getNode(), password)
+        if client.auth(jid.getNode(), password) != "sasl":
+            print("Failed to connect, bad login/password combination")
+            sys.exit(1)
 
         client.sendInitPresence(requestRoster=0)
 
