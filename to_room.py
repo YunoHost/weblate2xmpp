@@ -16,6 +16,10 @@ def XMPPBot(password):
 
     def connect():
         client.connect()
+
+        # yes, this is how this stupid lib tells you that the connection
+        # succeed, it return the string "sasl", this doesn't make any sens and
+        # it documented nowhere, because xmpp is THE FUTUR
         if client.auth(jid.getNode(), password) != "sasl":
             print("Failed to connect, bad login/password combination")
             sys.exit(1)
