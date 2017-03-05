@@ -42,3 +42,14 @@ def XMPPBot(password):
 
     if client.connected:
         client.disconnect()
+
+
+if __name__ == '__main__':
+    if len(sys.argv[1:]) < 2:
+        print "Usage : python to_room.py <password> <message>"
+        sys.exit(1)
+
+    password, message = sys.argv[1:3]
+
+    with XMPPBot(password) as bot:
+        bot.sendToChatRoom(message)
