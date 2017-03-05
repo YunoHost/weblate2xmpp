@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def XMPPBot(password):
+def XMPPBot(password, room="dev"):
     jid = xmpp.protocol.JID("gitbot@im.yunohost.org")
 
     client = xmpp.Client(jid.getDomain(), debug=[])
@@ -26,19 +26,20 @@ def XMPPBot(password):
 
         client.sendInitPresence(requestRoster=0)
 
-        presence = xmpp.Presence(to="dev@conference.yunohost.org")
+        presence = xmpp.Presence(to="%s@conference.yunohost.org" % room)
         presence.setTag('x', namespace='http://jabber.org/protocol/muc')
 
         client.send(presence)
 
-        client.send(xmpp.Presence(to='dev@conference.yunohost.org/GitBot'))
+        client.send(xmpp.Presence(to='%s@conference.yunohost.org/GitBot' % room))
 
     def sendToChatRoom(message):
         if not client.connected:
             connect()
             client.connected = True
 
-        client.send(xmpp.protocol.Message("dev@conference.yunohost.org", message, typ="groupchat"))
+        print room
+        client.send(xmpp.protocol.Message("%s@conference.yunohost.org" % room, message, typ="groupchat"))
 
     client.sendToChatRoom = sendToChatRoom
 
@@ -50,10 +51,15 @@ def XMPPBot(password):
 
 if __name__ == '__main__':
     if len(sys.argv[1:]) < 2:
-        print "Usage : python to_room.py <password> <message>"
+        print "Usage : python to_room.py <password> <message> [<room name>]"
         sys.exit(1)
 
     password, message = sys.argv[1:3]
 
-    with XMPPBot(password) as bot:
+    if len(sys.argv[1:]) > 2:
+        room = sys.argv[1:][2]
+    else:
+        room = "dev"
+
+    with XMPPBot(password, room=room) as bot:
         bot.sendToChatRoom(message)
